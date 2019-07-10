@@ -1,0 +1,32 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="wsdl-objects"
+           targetNamespace="wsdl-objects"
+           elementFormDefault="qualified">
+
+    <xs:element name="SubscriberRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="id" type="xs:long"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="SubscriberResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="subscriber" type="tns:subscriber"/>
+            </xs:sequence>
+
+        </xs:complexType>
+    </xs:element>
+
+
+    <xs:complexType name="subscriber">
+        <xs:sequence>
+            <xs:element name="id" type="xs:long"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="msisdn" type="xs:long"/>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>
