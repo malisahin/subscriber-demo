@@ -1,6 +1,6 @@
 package com.example.subscriber.domain;
 
-import wsdl_objects.Subscriber;
+import com.example.subscriber.wsdl.Subscriber;
 
 import java.util.List;
 

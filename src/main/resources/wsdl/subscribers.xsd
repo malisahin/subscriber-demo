@@ -1,6 +1,6 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           xmlns:tns="wsdl-objects"
-           targetNamespace="wsdl-objects"
+           xmlns:tns="http://www.example.com/subscriber/wsdl"
+           targetNamespace="http://www.example.com/subscriber/wsdl"
            elementFormDefault="qualified">
 
     <xs:element name="SubscriberRequest">
@@ -20,12 +20,12 @@
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="AllArticlesRequest">
+    <xs:element name="AllSubscribersRequest">
         <xs:complexType>
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="AllArticleResponse">
+    <xs:element name="AllSubscribersResponse">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="subscriberList" type="tns:subscriber" maxOccurs="unbounded"/>

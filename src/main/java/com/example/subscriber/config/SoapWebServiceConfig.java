@@ -33,7 +33,7 @@ public class SoapWebServiceConfig extends WsConfigurerAdapter {
         DefaultWsdl11Definition definition = new DefaultWsdl11Definition();
         definition.setPortTypeName("SubscriberPort");
         definition.setLocationUri("/ws");
-        definition.setTargetNamespace("wsdl_objects");
+        definition.setTargetNamespace("http://www.example.com/subscriber/wsdl");
         definition.setSchema(subscriberSchema);
         return definition;
     }

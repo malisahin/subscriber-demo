@@ -3,12 +3,12 @@ package com.example.subscriber.service;
 import com.example.subscriber.base.AbstractBaseComponent;
 import com.example.subscriber.domain.SubscriberWrapper;
 import com.example.subscriber.util.FileHelper;
+import com.example.subscriber.wsdl.Subscriber;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import wsdl_objects.Subscriber;
 
 import java.io.IOException;
 import java.util.List;

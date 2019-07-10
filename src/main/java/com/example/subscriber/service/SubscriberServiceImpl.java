@@ -1,11 +1,11 @@
 package com.example.subscriber.service;
 
 import com.example.subscriber.base.Constants;
+import com.example.subscriber.wsdl.Subscriber;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
-import wsdl_objects.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;

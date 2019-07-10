@@ -1,11 +1,11 @@
 package com.example.subscriber.controller;
 
 import com.example.subscriber.service.SubscriberService;
+import com.example.subscriber.wsdl.Subscriber;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import wsdl_objects.Subscriber;
 
 /**
  * @author mali.sahin

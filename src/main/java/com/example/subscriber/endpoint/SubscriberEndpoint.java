@@ -1,15 +1,17 @@
 package com.example.subscriber.endpoint;
 
 import com.example.subscriber.service.SubscriberService;
+import com.example.subscriber.wsdl.AllSubscribersResponse;
+import com.example.subscriber.wsdl.Subscriber;
+import com.example.subscriber.wsdl.SubscriberRequest;
+import com.example.subscriber.wsdl.SubscriberResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
-import wsdl_objects.Subscriber;
-import wsdl_objects.SubscriberRequest;
-import wsdl_objects.SubscriberResponse;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -33,4 +35,12 @@ public class SubscriberEndpoint {
         return response;
     }
 
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "AllSubscribersResponse")
+    @ResponsePayload
+    public AllSubscribersResponse getAllSubscribers() {
+        final List<Subscriber> subscriberList = subscriberService.getAllSubscribers();
+        final AllSubscribersResponse response = new AllSubscribersResponse();
+        response.getSubscriberList().addAll(subscriberList);
+        return response;
+    }
 }

@@ -1,6 +1,6 @@
 package com.example.subscriber.service;
 
-import wsdl_objects.Subscriber;
+import com.example.subscriber.wsdl.Subscriber;
 
 import java.util.List;
 import java.util.Optional;
