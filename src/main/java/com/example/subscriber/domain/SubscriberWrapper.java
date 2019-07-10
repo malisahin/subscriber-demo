@@ -10,6 +10,9 @@ import java.util.List;
  */
 public class SubscriberWrapper {
 
+  public SubscriberWrapper() {
+  }
+
   public SubscriberWrapper(List<Subscriber> subscribers) {
     this.subscribers = subscribers;
   }

@@ -42,7 +42,7 @@ public class SubscriberScheduleTasks extends AbstractBaseComponent implements Da
   }
 
   @Override
-  @Scheduled(cron = "0 * * * * ?")
+  @Scheduled(cron = "${subscribeSyncSchedule}")
   public void scheduleTaskWithCronExpression() {
     logger.info("Cron Task :: Execution Time - {}", dateTimeFormatter.format(LocalDateTime.now()));
     final List<Subscriber> subscriberList = subscriberService.getAllSubscribers();

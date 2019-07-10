@@ -7,6 +7,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import wsdl_objects.Subscriber;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentMap;
@@ -57,7 +58,7 @@ public class SubscriberServiceImpl implements SubscriberService {
   public List<Subscriber> getAllSubscribers() {
     final Cache cache = cacheManager.getCache(Constants.STORE_PATH);
     ConcurrentMap<Long, Subscriber> mapCache = (ConcurrentMap<Long, Subscriber>) cache.getNativeCache();
-    return (List<Subscriber>) mapCache.values();
+    return new ArrayList<>(mapCache.values());
   }
 
   @Override

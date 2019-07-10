@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter;
 public abstract class AbstractBaseComponent implements Serializable {
 
   protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-  protected final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+  protected final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd:MM:yyyy HH:mm:ss");
 
   protected final ObjectMapper mapper = new ObjectMapper();
 }

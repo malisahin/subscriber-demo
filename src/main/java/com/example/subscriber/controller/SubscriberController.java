@@ -1,4 +1,4 @@
-package com.example.subscriber;
+package com.example.subscriber.controller;
 
 import com.example.subscriber.service.SubscriberService;
 import org.springframework.beans.factory.annotation.Autowired;
