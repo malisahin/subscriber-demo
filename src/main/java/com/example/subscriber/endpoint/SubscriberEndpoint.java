@@ -19,10 +19,12 @@ import java.util.Optional;
 @Endpoint
 public class SubscriberEndpoint {
 
+    private static final String NAMESPACE_URI = "wsdl_objects";
+
     @Autowired
     private SubscriberService subscriberService;
 
-    @PayloadRoot(namespace = "wsdl_objects", localPart = "SubscriberResponse")
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "SubscriberResponse")
     @ResponsePayload
     public SubscriberResponse getSubscriberByIdRequest(@RequestPayload SubscriberRequest request) {
         final Optional<Subscriber> optSubscriber = subscriberService.getSubscriberById(request.getId());
