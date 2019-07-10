@@ -21,12 +21,12 @@ import java.util.Optional;
 @Endpoint
 public class SubscriberEndpoint {
 
-    private static final String NAMESPACE_URI = "wsdl_objects";
+    private static final String NAMESPACE_URI = "http://www.example.com/subscriber/wsdl";
 
     @Autowired
     private SubscriberService subscriberService;
 
-    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "SubscriberResponse")
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "SubscriberRequest")
     @ResponsePayload
     public SubscriberResponse getSubscriberByIdRequest(@RequestPayload SubscriberRequest request) {
         final Optional<Subscriber> optSubscriber = subscriberService.getSubscriberById(request.getId());
@@ -35,7 +35,7 @@ public class SubscriberEndpoint {
         return response;
     }
 
-    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "AllSubscribersResponse")
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "AllSubscribersRequest")
     @ResponsePayload
     public AllSubscribersResponse getAllSubscribers() {
         final List<Subscriber> subscriberList = subscriberService.getAllSubscribers();

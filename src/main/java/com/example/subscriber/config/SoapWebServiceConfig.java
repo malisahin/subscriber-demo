@@ -21,7 +21,7 @@ import org.springframework.xml.xsd.XsdSchema;
 public class SoapWebServiceConfig extends WsConfigurerAdapter {
 
     @Bean
-    public ServletRegistrationBean messageDispatcherServlet(ApplicationContext context) {
+    public ServletRegistrationBean<MessageDispatcherServlet> messageDispatcherServlet(ApplicationContext context) {
         MessageDispatcherServlet servlet = new MessageDispatcherServlet();
         servlet.setApplicationContext(context);
         servlet.setTransformWsdlLocations(true);
@@ -29,12 +29,12 @@ public class SoapWebServiceConfig extends WsConfigurerAdapter {
     }
 
     @Bean(name = "subscriberWsdl")
-    public DefaultWsdl11Definition defaultWsdl11Definition(XsdSchema subscriberSchema) {
+    public DefaultWsdl11Definition defaultWsdl11Definition(XsdSchema schema) {
         DefaultWsdl11Definition definition = new DefaultWsdl11Definition();
-        definition.setPortTypeName("SubscriberPort");
+        definition.setPortTypeName("SubscriberEndpoint");
         definition.setLocationUri("/ws");
         definition.setTargetNamespace("http://www.example.com/subscriber/wsdl");
-        definition.setSchema(subscriberSchema);
+        definition.setSchema(schema);
         return definition;
     }
 
