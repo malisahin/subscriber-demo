@@ -1,5 +1,6 @@
 package com.example.subscriber.service;
 
+import com.example.subscriber.base.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -26,38 +27,42 @@ public class SubscriberServiceImpl implements SubscriberService {
   @Override
   public Subscriber createSubscriber(Subscriber subscriber) {
 
-    final Cache cache = cacheManager.getCache("store");
-    cache.put(subscriber.getId(), subscriber);
-    getAllSubscribers();
+    final Cache cache = cacheManager.getCache(Constants.STORE_PATH);
+    Optional.ofNullable(cache)
+        .ifPresent(store -> store.put(subscriber.getId(), subscriber));
     return subscriber;
   }
 
   @Override
   public Subscriber updateSubscriber(Subscriber subscriber) {
-    final Cache cache = cacheManager.getCache("store");
-    final Subscriber old = (Subscriber) cache.get(subscriber.getId());
-    old.setName(subscriber.getName());
-    old.setMsisdn(subscriber.getMsisdn());
-    cache.put(old.getId(), old);
-    return old;
+    final Cache cache = cacheManager.getCache(Constants.STORE_PATH);
+    return Optional.ofNullable(cache)
+        .map(store -> store.get(subscriber.getId()))
+        .map(old -> (Subscriber) old)
+        .map(old -> {
+          old.setName(subscriber.getName());
+          old.setMsisdn(subscriber.getMsisdn());
+          cache.put(old.getId(), old);
+          return old;
+        }).orElse(null);
   }
 
   @Override
   public void deleteSubscriber(Long subscriberId) {
-    final Cache cache = cacheManager.getCache("store");
-    cache.evict(subscriberId);
+    final Cache cache = cacheManager.getCache(Constants.STORE_PATH);
+    Optional.ofNullable(cache).ifPresent((store -> store.evict(subscriberId)));
   }
 
   @Override
   public List<Subscriber> getAllSubscribers() {
-    final Cache cache = cacheManager.getCache("store");
+    final Cache cache = cacheManager.getCache(Constants.STORE_PATH);
     ConcurrentMap<Long, Subscriber> mapCache = (ConcurrentMap<Long, Subscriber>) cache.getNativeCache();
     return (List<Subscriber>) mapCache.values();
   }
 
   @Override
   public Optional<Subscriber> getSubscriberById(Long subscriberId) {
-    final Cache cache = cacheManager.getCache("store");
+    final Cache cache = cacheManager.getCache(Constants.STORE_PATH);
     ConcurrentMap<Long, Subscriber> mapCache = (ConcurrentMap<Long, Subscriber>) cache.getNativeCache();
     return mapCache.keySet()
         .stream()

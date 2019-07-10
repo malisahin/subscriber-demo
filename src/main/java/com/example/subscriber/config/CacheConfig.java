@@ -1,5 +1,6 @@
 package com.example.subscriber.config;
 
+import com.example.subscriber.base.Constants;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
@@ -17,11 +18,11 @@ import java.util.Collections;
 @EnableCaching
 public class CacheConfig {
 
-    @Bean
-    public CacheManager cacheManager() {
-        SimpleCacheManager cacheManager = new SimpleCacheManager();
-        cacheManager.setCaches(Collections.singletonList(
-                new ConcurrentMapCache("store")));
-        return cacheManager;
-    }
+  @Bean
+  public CacheManager cacheManager() {
+    SimpleCacheManager cacheManager = new SimpleCacheManager();
+    cacheManager.setCaches(Collections.singletonList(
+        new ConcurrentMapCache(Constants.STORE_PATH)));
+    return cacheManager;
+  }
 }
