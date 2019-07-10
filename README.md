@@ -1,6 +1,6 @@
 # subscriber-demo
 ## 1. Step
-In application.properties file has a property which is called `initial.data.path` has initial file address to sync cache and file data.
+In `application.properties` file has a property which is called `initial.data.path` has initial file address to sync cache and file data.
 
 - In order to run application, tester has to add `${home}/app.json` file. Tester can add
   ######   {"subscribers":[{"id":1,"name":"Stephan King","msisdn":905552551122},{"id":2,"name":" Alice Gracy","msisdn":905552551133},{"id":3,"name":"Glory Wisdom","msisdn":905552551144}]}
