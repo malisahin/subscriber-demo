@@ -5,7 +5,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalTime;
 import java.util.Arrays;
 
 
@@ -17,11 +16,11 @@ import java.util.Arrays;
 @Component
 public class LoggingHandler extends AbstractBaseComponent {
 
-  @Pointcut("within(@org.springframework.stereotype.Controller *)")
+  @Pointcut("execution(* com.example.subscriber.controller..*(..))")
   public void controller() {
   }
 
-  @Pointcut("within(@org.springframework.ws.server.endpoint.annotation.Endpoint *)")
+  @Pointcut("execution(* com.example.subscriber.endpoint..*(..))")
   public void endpoint() {
 
   }
@@ -30,21 +29,18 @@ public class LoggingHandler extends AbstractBaseComponent {
   protected void allMethod() {
   }
 
-  @Before("controller() && endpoint() && allMethod() ")
+  @Before("execution(* com.example.subscriber.controller..*(..)) || execution(* com.example.subscriber.endpoint..*(..))")
   public void logBefore(JoinPoint joinPoint) {
-    final LocalTime localTime = LocalTime.now();
-    dateTimeFormatter.format(localTime);
-
-    logger.debug("Entering in Method :  " + joinPoint.getSignature().getName());
-    logger.debug("Class Name :  " + joinPoint.getSignature().getDeclaringTypeName());
-    logger.debug("Arguments :  " + Arrays.toString(joinPoint.getArgs()));
-    logger.debug("Target class : " + joinPoint.getTarget().getClass().getName());
+    logger.info("Entering in Method :  " + joinPoint.getSignature().getName());
+    logger.info("Class Name :  " + joinPoint.getSignature().getDeclaringTypeName());
+    logger.info("Arguments :  " + Arrays.toString(joinPoint.getArgs()));
+    logger.info("Target class : " + joinPoint.getTarget().getClass().getName());
   }
 
   @AfterReturning(pointcut = "controller() && endpoint() && allMethod()", returning = "result")
   public void logAfter(JoinPoint joinPoint, Object result) {
     String returnValue = this.getValue(result);
-    logger.debug("Method Return value : " + returnValue);
+    logger.info("Method Return value : " + returnValue);
   }
 
   @AfterThrowing(pointcut = "controller() && endpoint() && allMethod()", throwing = "exception")
