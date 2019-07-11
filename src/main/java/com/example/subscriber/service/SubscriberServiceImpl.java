@@ -1,6 +1,7 @@
 package com.example.subscriber.service;
 
 import com.example.subscriber.base.Constants;
+import com.example.subscriber.base.ResourceNotFoundException;
 import com.example.subscriber.wsdl.Subscriber;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
@@ -21,55 +22,62 @@ import java.util.function.Function;
 public class SubscriberServiceImpl implements SubscriberService {
 
 
-  @Autowired
-  CacheManager cacheManager;
+    @Autowired
+    CacheManager cacheManager;
 
 
-  @Override
-  public Subscriber createSubscriber(Subscriber subscriber) {
+    @Override
+    public Subscriber createSubscriber(Subscriber subscriber) {
 
-    final Cache cache = cacheManager.getCache(Constants.STORE_PATH);
-    Optional.ofNullable(cache)
-        .ifPresent(store -> store.put(subscriber.getId(), subscriber));
-    return subscriber;
-  }
+        final Cache cache = cacheManager.getCache(Constants.STORE_PATH);
+        Optional.ofNullable(cache)
+                .ifPresent(store -> store.put(subscriber.getId(), subscriber));
+        return subscriber;
+    }
 
-  @Override
-  public Subscriber updateSubscriber(Subscriber subscriber) {
-    final Cache cache = cacheManager.getCache(Constants.STORE_PATH);
-    return Optional.ofNullable(cache)
-        .map(store -> store.get(subscriber.getId()))
-        .map(old -> (Subscriber) old)
-        .map(old -> {
-          old.setName(subscriber.getName());
-          old.setMsisdn(subscriber.getMsisdn());
-          cache.put(old.getId(), old);
-          return old;
-        }).orElse(null);
-  }
+    @Override
+    public Subscriber updateSubscriber(Subscriber subscriber) {
+        this.validateSubscriberIfPresent(subscriber.getId());
+        final Cache cache = cacheManager.getCache(Constants.STORE_PATH);
+        return Optional.ofNullable(cache)
+                .map(store -> store.get(subscriber.getId()))
+                .map(old -> (Subscriber) old)
+                .map(old -> {
+                    old.setName(subscriber.getName());
+                    old.setMsisdn(subscriber.getMsisdn());
+                    cache.put(old.getId(), old);
+                    return old;
+                }).orElse(null);
+    }
 
-  @Override
-  public void deleteSubscriber(Long subscriberId) {
-    final Cache cache = cacheManager.getCache(Constants.STORE_PATH);
-    Optional.ofNullable(cache).ifPresent((store -> store.evict(subscriberId)));
-  }
+    private void validateSubscriberIfPresent(final Long subscriberId) {
+        this.getSubscriberById(subscriberId)
+                .orElseThrow(() -> new ResourceNotFoundException("Subscriber Not Found"));
+    }
 
-  @Override
-  public List<Subscriber> getAllSubscribers() {
-    final Cache cache = cacheManager.getCache(Constants.STORE_PATH);
-    ConcurrentMap<Long, Subscriber> mapCache = (ConcurrentMap<Long, Subscriber>) cache.getNativeCache();
-    return new ArrayList<>(mapCache.values());
-  }
+    @Override
+    public void deleteSubscriber(Long subscriberId) {
+        this.validateSubscriberIfPresent(subscriberId);
+        final Cache cache = cacheManager.getCache(Constants.STORE_PATH);
+        Optional.ofNullable(cache).ifPresent((store -> store.evict(subscriberId)));
+    }
 
-  @Override
-  public Optional<Subscriber> getSubscriberById(Long subscriberId) {
-    final Cache cache = cacheManager.getCache(Constants.STORE_PATH);
-    ConcurrentMap<Long, Subscriber> mapCache = (ConcurrentMap<Long, Subscriber>) cache.getNativeCache();
-    return mapCache.keySet()
-        .stream()
-        .filter(key -> key.equals(subscriberId))
-        .map((Function<Long, Object>) mapCache::get)
-        .map(cacheObject -> (Subscriber) cacheObject)
-        .findFirst();
-  }
+    @Override
+    public List<Subscriber> getAllSubscribers() {
+        final Cache cache = cacheManager.getCache(Constants.STORE_PATH);
+        ConcurrentMap<Long, Subscriber> mapCache = (ConcurrentMap<Long, Subscriber>) cache.getNativeCache();
+        return new ArrayList<>(mapCache.values());
+    }
+
+    @Override
+    public Optional<Subscriber> getSubscriberById(Long subscriberId) {
+        final Cache cache = cacheManager.getCache(Constants.STORE_PATH);
+        ConcurrentMap<Long, Subscriber> mapCache = (ConcurrentMap<Long, Subscriber>) cache.getNativeCache();
+        return mapCache.keySet()
+                .stream()
+                .filter(key -> key.equals(subscriberId))
+                .map((Function<Long, Object>) mapCache::get)
+                .map(cacheObject -> (Subscriber) cacheObject)
+                .findFirst();
+    }
 }
