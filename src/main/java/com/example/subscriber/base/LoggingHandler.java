@@ -1,11 +1,17 @@
 package com.example.subscriber.base;
 
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.util.Arrays;
+import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Field;
+import java.time.LocalDateTime;
 
 
 /**
@@ -16,7 +22,7 @@ import java.util.Arrays;
 @Component
 public class LoggingHandler extends AbstractBaseComponent {
 
-  @Pointcut("execution(* com.example.subscriber.controller..*(..))")
+  @Pointcut("within(com.example.subscriber.controller.*)")
   public void controller() {
   }
 
@@ -31,55 +37,49 @@ public class LoggingHandler extends AbstractBaseComponent {
 
   @Before("execution(* com.example.subscriber.controller..*(..)) || execution(* com.example.subscriber.endpoint..*(..))")
   public void logBefore(JoinPoint joinPoint) {
-    logger.info("Entering in Method :  " + joinPoint.getSignature().getName());
-    logger.info("Class Name :  " + joinPoint.getSignature().getDeclaringTypeName());
-    logger.info("Arguments :  " + Arrays.toString(joinPoint.getArgs()));
-    logger.info("Target class : " + joinPoint.getTarget().getClass().getName());
+
+    final StringBuilder builder = new StringBuilder();
+    builder.append(dateTimeFormatter.format(LocalDateTime.now()));
+    builder.append(" ");
+    final HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+    builder.append(request.getRequestURI());
+    builder.append("[");
+    builder.append(request.getMethod());
+    builder.append("]");
+    builder.append(getBody(joinPoint));
+    logger.info(builder.toString());
   }
 
-  @AfterReturning(pointcut = "controller() && endpoint() && allMethod()", returning = "result")
-  public void logAfter(JoinPoint joinPoint, Object result) {
-    String returnValue = this.getValue(result);
-    logger.info("Method Return value : " + returnValue);
-  }
-
-  @AfterThrowing(pointcut = "controller() && endpoint() && allMethod()", throwing = "exception")
-  public void logAfterThrowing(JoinPoint joinPoint, Throwable exception) {
-
-    logger.error(String.format("An exception has been thrown in %1$s  %2$s", joinPoint.getSignature().getName(), "()"));
-    logger.error(String.format("Cause : %s", exception.getCause()));
-  }
-
-  @Around("controller() && allMethod()")
-  public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
-
-    long start = System.currentTimeMillis();
+  private String getBody(JoinPoint joinPoint) {
+    final StringBuilder builder = new StringBuilder();
+    final Object object = joinPoint.getArgs()[0];
     try {
-      String className = joinPoint.getSignature().getDeclaringTypeName();
-      String methodName = joinPoint.getSignature().getName();
-      Object result = joinPoint.proceed();
-      long elapsedTime = System.currentTimeMillis() - start;
-      logger.debug("Method " + className + "." + methodName + " ()" + " execution time : "
-              + elapsedTime + " ms");
-
-      return result;
-    } catch (IllegalArgumentException e) {
-      logger.error("Illegal argument " + Arrays.toString(joinPoint.getArgs()) + " in "
-              + joinPoint.getSignature().getName() + "()");
-      throw e;
-    }
-  }
-
-  private String getValue(Object result) {
-    String returnValue = null;
-    if (null != result) {
-      if (result.toString().endsWith("@" + Integer.toHexString(result.hashCode()))) {
-        System.out.println(result);
-        // returnValue = ReflectionToStringBuilder.toString(result);
-      } else {
-        returnValue = result.toString();
+      final Class<?> thisClass = Class.forName(object.getClass().getName());
+      builder.append(" [ ");
+      for (Field field : thisClass.getDeclaredFields()) {
+        field.setAccessible(true);
+        builder.append(field.getName())
+            .append(" = ")
+            .append(field.get(object))
+            .append(", ");
       }
+      builder.append("]");
+    } catch (Exception e) {
+      logger.error(e.getMessage());
     }
-    return returnValue;
+    return builder.toString();
   }
+
+  @AfterThrowing(pointcut = "execution(* com.example.subscriber.controller..*(..)) || execution(* com.example.subscriber.endpoint..*(..))",
+      throwing = "exception")
+  public void logAfterThrowing(JoinPoint joinPoint, Throwable exception) {
+    final StringBuilder builder = new StringBuilder();
+    builder.append(dateTimeFormatter.format(LocalDateTime.now()));
+    builder.append("An exception has been thrown in ");
+    builder.append(joinPoint.getSignature().getName()).append("()");
+    builder.append("Error Message: ");
+    builder.append(exception.getMessage());
+    logger.error(builder.toString());
+  }
+
 }

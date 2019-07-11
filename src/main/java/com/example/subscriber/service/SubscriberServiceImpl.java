@@ -41,7 +41,7 @@ public class SubscriberServiceImpl implements SubscriberService {
         final Cache cache = cacheManager.getCache(Constants.STORE_PATH);
         return Optional.ofNullable(cache)
                 .map(store -> store.get(subscriber.getId()))
-                .map(old -> (Subscriber) old)
+                .map(old -> (Subscriber) old.get())
                 .map(old -> {
                     old.setName(subscriber.getName());
                     old.setMsisdn(subscriber.getMsisdn());
