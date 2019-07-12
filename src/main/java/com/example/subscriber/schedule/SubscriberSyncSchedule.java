@@ -26,7 +26,7 @@ public class SubscriberSyncSchedule extends AbstractBaseComponent {
     @Autowired
     private SubscriberService subscriberService;
 
-    @Scheduled(cron = "${subscribeSyncSchedule}")
+    @Scheduled(cron = "${schedule.each.minute}")
     public void runSyncJob() {
         logger.info("Subscriber sync task :: Execution Time - {} ", dateTimeFormatter.format(LocalDateTime.now()));
         final List<Subscriber> subscriberList = subscriberService.getAllSubscribers();
