@@ -9,7 +9,7 @@
 ## 1. Step
 In order to run application,
 1. project should be downloaded to local pc.
-2. Because of maven, `mvn clean install` terminal command should be execeuted.
+2. Because of maven, `mvn clean install` terminal command should be executed.
 3. If 8080 port is not busy, app should start to work.
   
  
