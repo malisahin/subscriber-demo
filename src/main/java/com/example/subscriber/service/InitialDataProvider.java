@@ -1,8 +1,6 @@
 package com.example.subscriber.service;
 
 import com.example.subscriber.base.AbstractBaseComponent;
-import com.example.subscriber.domain.SubscriberWrapper;
-import com.example.subscriber.util.FileHelper;
 import com.example.subscriber.wsdl.Subscriber;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,13 +58,6 @@ public class InitialDataProvider extends AbstractBaseComponent implements Initia
     private void initData() {
         InitialDataProvider.subscriberList
                 .forEach(subscriber -> subscriberService.createSubscriber(subscriber));
-
-
-    }
-
-    private List<Subscriber> readFromJsonFile() throws IOException {
-        final SubscriberWrapper wrapper = FileHelper.readFromJsonFile(initialDataPath, SubscriberWrapper.class);
-        return wrapper.getSubscribers();
     }
 
 

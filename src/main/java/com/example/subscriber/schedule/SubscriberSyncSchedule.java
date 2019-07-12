@@ -1,7 +1,8 @@
-package com.example.subscriber.service;
+package com.example.subscriber.schedule;
 
 import com.example.subscriber.base.AbstractBaseComponent;
 import com.example.subscriber.domain.SubscriberWrapper;
+import com.example.subscriber.service.SubscriberService;
 import com.example.subscriber.util.FileHelper;
 import com.example.subscriber.wsdl.Subscriber;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ import java.util.List;
  * @since 7/10/19.
  */
 @Component
-public class SubscriberScheduleTasks extends AbstractBaseComponent implements DataSyncScheduleTasks {
+public class SubscriberSyncSchedule extends AbstractBaseComponent {
 
     @Value("${initial.data.path}")
     String initialDataPath;
@@ -25,9 +26,8 @@ public class SubscriberScheduleTasks extends AbstractBaseComponent implements Da
     @Autowired
     private SubscriberService subscriberService;
 
-    @Override
     @Scheduled(cron = "${subscribeSyncSchedule}")
-    public void scheduleTaskWithCronExpression() {
+    public void runSyncJob() {
         logger.info("Subscriber sync task :: Execution Time - {} ", dateTimeFormatter.format(LocalDateTime.now()));
         final List<Subscriber> subscriberList = subscriberService.getAllSubscribers();
         SubscriberWrapper wrapper = new SubscriberWrapper(subscriberList);

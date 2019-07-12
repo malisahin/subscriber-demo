@@ -27,7 +27,6 @@ public class SubscriberServiceImpl extends AbstractBaseComponent implements Subs
     @Autowired
     private CacheManager cacheManager;
 
-
     @Override
     public Subscriber createSubscriber(Subscriber subscriber) {
         this.validateSubscriberRequiredFields(subscriber);
