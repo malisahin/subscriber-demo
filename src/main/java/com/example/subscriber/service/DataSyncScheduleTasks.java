@@ -6,11 +6,5 @@ package com.example.subscriber.service;
  */
 public interface DataSyncScheduleTasks {
 
-   void scheduleTaskWithFixedRate();
-
-   void scheduleTaskWithFixedDelay();
-
-   void scheduleTaskWithInitialDelay();
-
    void scheduleTaskWithCronExpression();
 }

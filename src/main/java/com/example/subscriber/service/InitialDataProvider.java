@@ -45,7 +45,6 @@ public class InitialDataProvider extends AbstractBaseComponent implements Initia
 
     @Value("${initial.data.path}")
     String initialDataPath;
-
     @Autowired
     private SubscriberService subscriberService;
 
@@ -60,8 +59,8 @@ public class InitialDataProvider extends AbstractBaseComponent implements Initia
     }
 
     private void initData() {
-        final List<Subscriber> subscriberList = InitialDataProvider.subscriberList; // readFromJsonFile();
-        subscriberList.forEach(subscriber -> subscriberService.createSubscriber(subscriber));
+        InitialDataProvider.subscriberList
+                .forEach(subscriber -> subscriberService.createSubscriber(subscriber));
 
 
     }

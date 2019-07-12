@@ -1,4 +1,4 @@
-package com.example.subscriber.base;
+package com.example.subscriber.base.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

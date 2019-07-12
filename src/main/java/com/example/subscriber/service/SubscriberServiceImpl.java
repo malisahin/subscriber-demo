@@ -1,7 +1,9 @@
 package com.example.subscriber.service;
 
+import com.example.subscriber.base.AbstractBaseComponent;
 import com.example.subscriber.base.Constants;
-import com.example.subscriber.base.ResourceNotFoundException;
+import com.example.subscriber.base.exceptions.BusinessValidationException;
+import com.example.subscriber.base.exceptions.ResourceNotFoundException;
 import com.example.subscriber.wsdl.Subscriber;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
@@ -19,16 +21,16 @@ import java.util.function.Function;
  * @since 2019-07-09.
  */
 @Service
-public class SubscriberServiceImpl implements SubscriberService {
+public class SubscriberServiceImpl extends AbstractBaseComponent implements SubscriberService {
 
 
     @Autowired
-    CacheManager cacheManager;
+    private CacheManager cacheManager;
 
 
     @Override
     public Subscriber createSubscriber(Subscriber subscriber) {
-
+        this.validateSubscriberRequiredFields(subscriber);
         final Cache cache = cacheManager.getCache(Constants.STORE_PATH);
         Optional.ofNullable(cache)
                 .ifPresent(store -> store.put(subscriber.getId(), subscriber));
@@ -50,7 +52,22 @@ public class SubscriberServiceImpl implements SubscriberService {
                 }).orElse(null);
     }
 
+    private void validateSubscriberRequiredFields(Subscriber subscriber) {
+        Optional.of(subscriber)
+                .map(sub -> {
+                    this.validateSubscriberId(sub.getId());
+                    return sub;
+                }).orElseThrow(() -> new BusinessValidationException("Subscriber cannot be null !!"));
+    }
+
+    private void validateSubscriberId(Long subscriberId) {
+        Optional.of(subscriberId)
+                .filter(id -> id > 0)
+                .orElseThrow(() -> new BusinessValidationException("Id is compulsory field for Subscriber!!!"));
+    }
+
     private void validateSubscriberIfPresent(final Long subscriberId) {
+        this.validateSubscriberId(subscriberId);
         this.getSubscriberById(subscriberId)
                 .orElseThrow(() -> new ResourceNotFoundException("Subscriber Not Found"));
     }
@@ -71,6 +88,7 @@ public class SubscriberServiceImpl implements SubscriberService {
 
     @Override
     public Optional<Subscriber> getSubscriberById(Long subscriberId) {
+        this.validateSubscriberId(subscriberId);
         final Cache cache = cacheManager.getCache(Constants.STORE_PATH);
         ConcurrentMap<Long, Subscriber> mapCache = (ConcurrentMap<Long, Subscriber>) cache.getNativeCache();
         return mapCache.keySet()

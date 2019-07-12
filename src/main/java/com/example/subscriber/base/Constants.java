@@ -6,5 +6,9 @@ package com.example.subscriber.base;
  */
 public class Constants {
 
-  public final static String STORE_PATH = "store";
+    public static final String STORE_PATH = "store";
+
+    private Constants() {
+
+    }
 }

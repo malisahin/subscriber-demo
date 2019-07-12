@@ -19,34 +19,18 @@ import java.util.List;
 @Component
 public class SubscriberScheduleTasks extends AbstractBaseComponent implements DataSyncScheduleTasks {
 
-  @Value("${initial.data.path}")
-  String initialDataPath;
+    @Value("${initial.data.path}")
+    String initialDataPath;
 
-  @Autowired
-  private SubscriberService subscriberService;
+    @Autowired
+    private SubscriberService subscriberService;
 
-
-  @Override
-  public void scheduleTaskWithFixedRate() {
-
-  }
-
-  @Override
-  public void scheduleTaskWithFixedDelay() {
-
-  }
-
-  @Override
-  public void scheduleTaskWithInitialDelay() {
-
-  }
-
-  @Override
-  @Scheduled(cron = "${subscribeSyncSchedule}")
-  public void scheduleTaskWithCronExpression() {
-    logger.info("Cron Task :: Execution Time - {}", dateTimeFormatter.format(LocalDateTime.now()));
-    final List<Subscriber> subscriberList = subscriberService.getAllSubscribers();
-    SubscriberWrapper wrapper = new SubscriberWrapper(subscriberList);
-    FileHelper.writeToJsonFile(wrapper, initialDataPath);
-  }
+    @Override
+    @Scheduled(cron = "${subscribeSyncSchedule}")
+    public void scheduleTaskWithCronExpression() {
+        logger.info("Subscriber sync task :: Execution Time - {} ", dateTimeFormatter.format(LocalDateTime.now()));
+        final List<Subscriber> subscriberList = subscriberService.getAllSubscribers();
+        SubscriberWrapper wrapper = new SubscriberWrapper(subscriberList);
+        FileHelper.writeToJsonFile(wrapper, initialDataPath);
+    }
 }
